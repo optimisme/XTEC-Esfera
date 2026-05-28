@@ -14,7 +14,7 @@ L'extensió només és informativa, no permet canviar les dades ni interactuar a
 2. Obre Chrome i ves a `chrome://extensions`.
 3. Activa el **Mode de desenvolupador**.
 4. Arrossega el fitxer `.zip` a la finestra d’extensions de Chrome.
-5. Obre una pàgina compatible d’XTEC-Esfera i prem el botó **Resum**.
+5. Obre una pàgina de "Qualitficacions per grup i alumne" compatible d’XTEC-Esfera i prem el botó **Resum**.
 
 ## Desenvolupament
 
