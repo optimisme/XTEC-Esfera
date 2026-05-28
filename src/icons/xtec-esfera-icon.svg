@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="XTEC-Esfera">
+  <defs>
+    <linearGradient id="bg" x1="24" y1="18" x2="104" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5cb85c"/>
+      <stop offset="1" stop-color="#2f7d32"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="39" y1="23" x2="88" y2="78" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#eaf4ff"/>
+  <circle cx="64" cy="64" r="48" fill="url(#bg)"/>
+  <path d="M38 49c8-12 25-20 43-18 17 2 29 12 35 24-8-9-22-15-39-16-15-1-29 3-39 10Z" fill="url(#shine)"/>
+  <path d="M34 80c14 17 45 24 69 7" fill="none" stroke="#d9ecff" stroke-width="7" stroke-linecap="round"/>
+  <path d="M34 48 52 72 34 96h15l11-15 11 15h15L68 72l18-24H71L60 63 49 48H34Z" fill="#ffffff"/>
+  <path d="M84 48h28v11H97v8h13v10H97v8h16v11H84V48Z" fill="#ffffff"/>
+</svg>
