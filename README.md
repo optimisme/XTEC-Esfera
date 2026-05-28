@@ -11,10 +11,14 @@ L'extensió només és informativa, no permet canviar les dades ni interactuar a
 ## Instal·lació
 
 1. Descarrega el fitxer [release/XTEC-Esfera-0.1.0.zip](release/XTEC-Esfera-0.1.0.zip).
-2. Obre Chrome i ves a `chrome://extensions`.
-3. Activa el **Mode de desenvolupador**.
-4. Arrossega el fitxer `.zip` a la finestra d’extensions de Chrome.
-5. Obre una pàgina de "Qualitficacions per grup i alumne" compatible d’XTEC-Esfera i prem el botó **Resum**.
+2. Descomprimeix el fitxer `.zip` i guarda la carpeta descomprimida en un lloc no temporal, per exemple a `Documents` o a una carpeta d’aplicacions.
+3. Obre Chrome i ves a la pàgina d’extensions: `chrome://extensions`.
+4. Activa el **Mode de desenvolupador**. (A dalt a la dreta)
+5. Prem **Carrega una extensió desempaquetada**.
+6. Selecciona la carpeta descomprimida, la que conté el fitxer `manifest.json`.
+7. Obre una pàgina de "Qualificacions per grup i alumne" compatible d’XTEC-Esfera i prem el botó **Resum**.
+
+Chrome no instal·la extensions arrossegant directament un fitxer `.zip` en mode desenvolupador. Primer cal descomprimir-lo i carregar la carpeta desempaquetada.
 
 ## Desenvolupament
 
