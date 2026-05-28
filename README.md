@@ -12,7 +12,7 @@ L'extensió només és informativa, no permet canviar les dades ni interactuar a
 
 ## Instal·lació
 
-1. Descarrega el fitxer [XTEC-Esfera-0.1.1.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-0.1.1.zip).
+1. Descarrega el fitxer [XTEC-Esfera-0_1_1.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-0_1_1.zip).
 2. Descomprimeix el fitxer `.zip` i guarda la carpeta descomprimida en un lloc no temporal, per exemple a `Documents` o a una carpeta d’aplicacions.
 3. Obre una pestanya nova a Chrome i escriu a la barra d’adreces: `chrome://extensions`.
 4. Activa el **Mode de desenvolupador**. (A dalt a la dreta)
@@ -26,4 +26,4 @@ Chrome no instal·la extensions arrossegant directament un fitxer `.zip` en mode
 
 El codi font de l’extensió és a la carpeta [src](src).
 
-La versió empaquetada és el fitxer [XTEC-Esfera-0.1.1.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-0.1.1.zip).
+La versió empaquetada és el fitxer [XTEC-Esfera-0_1_1.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-0_1_1.zip). La versió actual de l’extensió és `0.1.1`.
