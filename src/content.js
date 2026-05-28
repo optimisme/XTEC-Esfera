@@ -4,8 +4,7 @@
   const expandButtonId = "xtec-esfera-expand-button";
   const styleId = "xtec-esfera-style";
   const openEventName = "xtec-esfera-open-summary";
-  const moduleCodePattern = /^\d{4}_ICB0$/;
-  const subsectionCodePattern = /^\d{4}_ICB0_[A-Z0-9]+$/;
+  const contentCodePattern = /^\d{4}_[A-Za-z0-9]+(?:_[A-Za-z0-9]+)*$/;
   const compactTableMinWidthSum = 40;
   const compactTableMaxWidthSum = 60;
   const provisionalSelector =
@@ -85,6 +84,23 @@
     return code.split("_").at(-1) || code;
   }
 
+  function getReferencedCode(rawName) {
+    const match = cleanText(rawName).match(/¬\(([^)]+)\)\s*$/);
+    return match ? match[1].trim() : "";
+  }
+
+  function isSubsectionCode(code, moduleCode) {
+    return code.startsWith(`${moduleCode}_`) && code.length > moduleCode.length + 1;
+  }
+
+  function rowHasGradeControls(row) {
+    return Boolean(
+      row.querySelector(provisionalSelector) ||
+        row.querySelector(quantitativeSelector) ||
+        row.querySelector(qualitativeSelector)
+    );
+  }
+
   function getStudentName() {
     const breadcrumbItems = Array.from(
       document.querySelectorAll(".breadcrumb li, .breadcrumb a, .breadcrumb-wrapper li, .breadcrumb-wrapper a")
@@ -112,8 +128,14 @@
       }
 
       const code = cleanText(cells[0].textContent);
+      const referencedCode = getReferencedCode(cells[1].textContent);
 
-      if (moduleCodePattern.test(code)) {
+      if (
+        contentCodePattern.test(code) &&
+        (!referencedCode || referencedCode === code) &&
+        !code.includes("_", 5) &&
+        rowHasGradeControls(row)
+      ) {
         currentModule = {
           code,
           name: getModuleName(cells[1].textContent, code),
@@ -129,8 +151,8 @@
 
       if (
         currentModule &&
-        subsectionCodePattern.test(code) &&
-        code.startsWith(`${currentModule.code}_`)
+        contentCodePattern.test(code) &&
+        isSubsectionCode(code, currentModule.code)
       ) {
         currentModule.subsections.push({
           code,
@@ -1022,7 +1044,11 @@
   }
 
   function isKnownPage() {
-    return extractModules().length > 0;
+    return Boolean(
+      document.querySelector('form[name="grupAlumne"]') &&
+        document.querySelector("table.grades-table") &&
+        document.querySelector(`${provisionalSelector}, ${quantitativeSelector}, ${qualitativeSelector}`)
+    );
   }
 
   function isVisible(element) {
