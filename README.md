@@ -2,7 +2,7 @@
 
 Extensió de Chrome per consultar ràpidament un resum de qualificacions dins les pàgines d’avaluació d’XTEC-Esfera.
 
-L’extensió afegeix un botó **Resum** a la pantalla i mostra una finestra gran amb els mòduls, les qualificacions principals i els resultats d’aprenentatge.
+L’extensió afegeix un botó **Resum** a la pantalla que mostra una finestra gran amb els mòduls, les qualificacions principals i els resultats d’aprenentatge.
 
 ![Nou botó](assets/buttons.png)
 
