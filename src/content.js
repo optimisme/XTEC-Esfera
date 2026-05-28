@@ -522,6 +522,8 @@
         width: calc(100vw - 100px);
         height: calc(100vh - 100px);
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
         border: 1px solid #dfe7ef;
         border-radius: 14px;
         background: #f8fbff;
@@ -533,6 +535,7 @@
         align-items: flex-start;
         justify-content: space-between;
         gap: 14px;
+        flex: 0 0 auto;
         padding: 14px 18px 10px;
         border-bottom: 1px solid #e5edf5;
         background: #ffffff;
@@ -606,8 +609,10 @@
       .xtec-esfera-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        align-content: start;
         gap: 8px;
-        height: calc(100% - 88px);
+        flex: 1 1 auto;
+        min-height: 0;
         overflow: auto;
         padding: 10px;
       }
@@ -909,7 +914,6 @@
 
         .xtec-esfera-grid {
           grid-template-columns: 1fr;
-          height: calc(100% - 84px);
           padding: 8px;
         }
 
