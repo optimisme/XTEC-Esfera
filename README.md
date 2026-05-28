@@ -10,7 +10,7 @@ L'extensió només és informativa, no permet canviar les dades ni interactuar a
 
 ## Instal·lació
 
-1. Descarrega el fitxer [release/XTEC-Esfera-0.1.0.zip](release/XTEC-Esfera-0.1.0.zip).
+1. Descarrega el fitxer [release/XTEC-Esfera-0.1.1.zip](release/XTEC-Esfera-0.1.1.zip).
 2. Descomprimeix el fitxer `.zip` i guarda la carpeta descomprimida en un lloc no temporal, per exemple a `Documents` o a una carpeta d’aplicacions.
 3. Obre Chrome i ves a la pàgina d’extensions: `chrome://extensions`.
 4. Activa el **Mode de desenvolupador**. (A dalt a la dreta)

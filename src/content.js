@@ -49,6 +49,10 @@
 
   function formatQualitativeValue(value) {
     const cleanedValue = cleanText(value);
+    if (cleanedValue === "NP-No presentat") {
+      return "NP";
+    }
+
     if (cleanedValue.includes("Pendent de qualificar")) {
       return "Pendent";
     }

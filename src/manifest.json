@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "XTEC-Esfera",
   "description": "Shows a centered overlay with XTEC-Esfera module grade summaries.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "action": {
     "default_title": "XTEC-Esfera",
     "default_icon": {
