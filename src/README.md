@@ -2,6 +2,10 @@
 
 A Chrome extension that shows a centered overlay with a summary of XTEC-Esfera module grades from the current page.
 
+## Avís sobre el mode d'edició
+
+El mode **Edició** és provisional. Pot omplir camps del formulari original d'XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
+
 ## Instal·lació a Chrome
 
 1. Descomprimeix el fitxer `.zip` i guarda la carpeta descomprimida en un lloc no temporal.

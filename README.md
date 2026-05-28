@@ -6,7 +6,7 @@ L’extensió afegeix un botó **Resum** a la pantalla que mostra una finestra g
 
 ![Nou botó](assets/buttons.png)
 
-L'extensió només és informativa, no permet canviar les dades ni interactuar amb el sistema d’avaluació d’XTEC-Esfera.
+El mode **Resum** és només informatiu. El mode **Edició** és una funcionalitat provisional: pot omplir camps del formulari original d’XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
 
 ![Captura de l'extensió XTEC-Esfera](assets/capture.png)
 
