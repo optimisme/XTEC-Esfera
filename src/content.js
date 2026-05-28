@@ -554,13 +554,24 @@
 
       .xtec-esfera-header {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
         gap: 14px;
         flex: 0 0 auto;
         padding: 14px 18px 10px;
         border-bottom: 1px solid #e5edf5;
         background: #ffffff;
+      }
+
+      .xtec-esfera-heading-group {
+        min-width: 0;
+      }
+
+      .xtec-esfera-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
       }
 
       .xtec-esfera-eyebrow {
@@ -582,7 +593,6 @@
       .xtec-esfera-tabs {
         display: inline-flex;
         gap: 3px;
-        margin-top: 8px;
         padding: 2px;
         border: 1px solid #d8e3ee;
         border-radius: 8px;
@@ -968,6 +978,7 @@
     header.className = "xtec-esfera-header";
 
     const headingGroup = document.createElement("div");
+    headingGroup.className = "xtec-esfera-heading-group";
     const eyebrow = document.createElement("p");
     eyebrow.className = "xtec-esfera-eyebrow";
     eyebrow.textContent = "XTEC-Esfera";
@@ -992,7 +1003,7 @@
     editTab.setAttribute("aria-pressed", "false");
 
     tabs.append(summaryTab, editTab);
-    headingGroup.append(eyebrow, heading, tabs);
+    headingGroup.append(eyebrow, heading);
 
     const closeButton = document.createElement("button");
     closeButton.className = "xtec-esfera-close";
@@ -1001,7 +1012,11 @@
     closeButton.textContent = "×";
     closeButton.addEventListener("click", () => overlay.remove());
 
-    header.append(headingGroup, closeButton);
+    const headerActions = document.createElement("div");
+    headerActions.className = "xtec-esfera-header-actions";
+    headerActions.append(tabs, closeButton);
+
+    header.append(headingGroup, headerActions);
     panel.append(header);
 
     const setActiveView = (viewName) => {
