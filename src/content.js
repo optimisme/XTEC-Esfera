@@ -241,6 +241,11 @@
   }
 
   function setNativeControlValue(control, value) {
+    const wasDisabled = control.disabled;
+    if (wasDisabled) {
+      control.disabled = false;
+    }
+
     const prototype = control instanceof HTMLSelectElement
       ? HTMLSelectElement.prototype
       : HTMLInputElement.prototype;
@@ -255,6 +260,10 @@
     control.dispatchEvent(new Event("input", { bubbles: true }));
     control.dispatchEvent(new Event("change", { bubbles: true }));
     control.dispatchEvent(new Event("blur", { bubbles: true }));
+
+    if (wasDisabled) {
+      control.disabled = true;
+    }
   }
 
   function markEditFieldSynced(field) {
@@ -329,19 +338,17 @@
     input.max = control.max || "";
     input.step = control.step || "";
     input.value = control.value || value || "";
-    input.disabled = control.disabled;
     input.setAttribute("aria-label", label);
     applyEditFieldColor(input, colorClass);
 
-    input.addEventListener("change", () => {
-      if (control.disabled) {
-        return;
-      }
-
+    const syncInput = () => {
       setNativeControlValue(control, input.value);
       applyEditFieldColor(input, colorClass);
       markEditFieldSynced(input);
-    });
+    };
+
+    input.addEventListener("input", syncInput);
+    input.addEventListener("change", syncInput);
 
     return input;
   }
@@ -353,7 +360,6 @@
 
     const select = document.createElement("select");
     select.className = "xtec-esfera-edit-field";
-    select.disabled = control.disabled;
     select.setAttribute("aria-label", label);
 
     Array.from(control.options).forEach((option) => {
@@ -376,10 +382,6 @@
     applyQualitativeEditColor(select, options.subsectionName);
 
     select.addEventListener("change", () => {
-      if (control.disabled) {
-        return;
-      }
-
       setNativeControlValue(control, select.value);
       applyQualitativeEditColor(select, options.subsectionName);
       markEditFieldSynced(select);
