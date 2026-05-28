@@ -1,10 +1,13 @@
 (function () {
   const overlayId = "xtec-esfera-overlay";
   const summaryButtonId = "xtec-esfera-summary-button";
+  const expandButtonId = "xtec-esfera-expand-button";
   const styleId = "xtec-esfera-style";
   const openEventName = "xtec-esfera-open-summary";
   const moduleCodePattern = /^\d{4}_ICB0$/;
   const subsectionCodePattern = /^\d{4}_ICB0_[A-Z0-9]+$/;
+  const compactTableMinWidthSum = 40;
+  const compactTableMaxWidthSum = 60;
 
   if (window.__xtecEsferaInitialized) {
     return;
@@ -464,13 +467,44 @@
         line-height: 1.42857143;
       }
 
+      #${expandButtonId} {
+        position: fixed;
+        z-index: 2147483646;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        border: 1px solid #d43f3a;
+        border-radius: 4px;
+        background: #d9534f;
+        color: #ffffff;
+        box-shadow: none;
+        cursor: pointer;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 1.42857143;
+      }
+
       #${summaryButtonId}:hover {
         border-color: #398439;
         background: #449d44;
       }
 
+      #${expandButtonId}:hover {
+        border-color: #ac2925;
+        background: #c9302c;
+      }
+
       #${summaryButtonId}:focus-visible {
         outline: 3px solid rgba(29, 78, 216, 0.35);
+        outline-offset: 2px;
+      }
+
+      #${expandButtonId}:focus-visible {
+        outline: 3px solid rgba(217, 83, 79, 0.35);
         outline-offset: 2px;
       }
 
@@ -583,6 +617,73 @@
     return extractModules().length > 0;
   }
 
+  function isVisible(element) {
+    const style = getComputedStyle(element);
+    return (
+      style.display !== "none" &&
+      style.visibility !== "hidden" &&
+      element.getClientRects().length > 0
+    );
+  }
+
+  function getElementWidthPercent(element) {
+    const width = element.style.width || "";
+    const match = width.match(/^([0-9.]+)%$/);
+    return match ? Number(match[1]) : null;
+  }
+
+  function getResizableHeaderCells(table) {
+    return Array.from(table.querySelectorAll("thead th")).filter((cell) => {
+      const ngStyle = cell.getAttribute("data-ng-style") || cell.getAttribute("ng-style") || "";
+      return ngStyle.includes("getProporcioPonderada") && isVisible(cell);
+    });
+  }
+
+  function getTableWidthSum(table) {
+    const headerCells = getResizableHeaderCells(table);
+    if (!headerCells.length) {
+      return 0;
+    }
+
+    return headerCells.reduce((sum, cell) => sum + (getElementWidthPercent(cell) || 0), 0);
+  }
+
+  function isCompactGradesTable(table) {
+    if (!isVisible(table)) {
+      return false;
+    }
+
+    const widthSum = getTableWidthSum(table);
+    return widthSum >= compactTableMinWidthSum && widthSum <= compactTableMaxWidthSum;
+  }
+
+  function findCompactGradesTables() {
+    return Array.from(document.querySelectorAll("table.grades-table")).filter(isCompactGradesTable);
+  }
+
+  function expandCompactGradesTables() {
+    const tables = findCompactGradesTables();
+
+    tables.forEach((table) => {
+      const widthSum = getTableWidthSum(table);
+      if (!widthSum) {
+        return;
+      }
+
+      const factor = 100 / widthSum;
+      Array.from(table.querySelectorAll("th, td")).forEach((cell) => {
+        const width = getElementWidthPercent(cell);
+        if (!width) {
+          return;
+        }
+
+        cell.style.width = `${width * factor}%`;
+      });
+    });
+
+    return tables.length > 0;
+  }
+
   function findAnteriorButton() {
     return Array.from(document.querySelectorAll("a, button")).find((element) => {
       if (element.id === summaryButtonId) {
@@ -619,6 +720,28 @@
     button.style.height = `${Math.round(rect.height)}px`;
   }
 
+  function copyButtonStyle(sourceButton, targetButton) {
+    const sourceStyle = getComputedStyle(sourceButton);
+    targetButton.style.color = sourceStyle.color;
+    targetButton.style.fontFamily = sourceStyle.fontFamily;
+    targetButton.style.fontSize = sourceStyle.fontSize;
+    targetButton.style.fontWeight = sourceStyle.fontWeight;
+    targetButton.style.lineHeight = sourceStyle.lineHeight;
+    targetButton.style.height = `${Math.round(sourceButton.getBoundingClientRect().height)}px`;
+  }
+
+  function positionExpandButton(button, summaryButton) {
+    const rect = summaryButton.getBoundingClientRect();
+    const gap = 10;
+    const leftOfSummary = rect.left - button.offsetWidth - gap;
+    const left = leftOfSummary >= 12 ? leftOfSummary : rect.right + gap;
+
+    copyButtonStyle(summaryButton, button);
+    button.style.top = `${Math.max(12, rect.top)}px`;
+    button.style.left = `${left}px`;
+    button.style.right = "auto";
+  }
+
   function syncSummaryButton() {
     const existingButton = document.getElementById(summaryButtonId);
     if (!document.body || !isKnownPage()) {
@@ -644,20 +767,69 @@
     return true;
   }
 
+  function syncExpandButton() {
+    const existingButton = document.getElementById(expandButtonId);
+    const summaryButton = document.getElementById(summaryButtonId);
+    if (!document.body || !summaryButton || !findCompactGradesTables().length) {
+      existingButton?.remove();
+      return false;
+    }
+
+    const expandButton = existingButton || document.createElement("button");
+    if (!existingButton) {
+      expandButton.id = expandButtonId;
+      expandButton.type = "button";
+      expandButton.textContent = "Expandir";
+      expandButton.setAttribute("aria-label", "Expand compacted XTEC-Esfera tables");
+      expandButton.addEventListener("click", () => {
+        expandCompactGradesTables();
+        syncExpandButton();
+      });
+    }
+
+    ensureStyles();
+    if (!existingButton) {
+      document.body.append(expandButton);
+    }
+
+    positionExpandButton(expandButton, summaryButton);
+    return true;
+  }
+
   function watchForKnownPage() {
     syncSummaryButton();
+    syncExpandButton();
 
     let pendingCheck = 0;
-    const scheduleSync = () => {
+    const isExtensionMutation = (mutation) => {
+      const target = mutation.target;
+      if (!(target instanceof Element)) {
+        return false;
+      }
+
+      return Boolean(
+        target.closest(`#${overlayId}, #${summaryButtonId}, #${expandButtonId}`) ||
+          target.id === styleId
+      );
+    };
+
+    const scheduleSync = (mutations = []) => {
+      if (mutations.length && mutations.every(isExtensionMutation)) {
+        return;
+      }
+
       window.clearTimeout(pendingCheck);
       pendingCheck = window.setTimeout(() => {
         syncSummaryButton();
+        syncExpandButton();
       }, 250);
     };
 
     const observer = new MutationObserver(scheduleSync);
 
     observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["aria-hidden", "class", "style"],
       childList: true,
       subtree: true
     });

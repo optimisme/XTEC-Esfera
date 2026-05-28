@@ -10,6 +10,8 @@ L'extensió només és informativa, no permet canviar les dades ni interactuar a
 
 ![Captura de l'extensió XTEC-Esfera](assets/capture.png)
 
+> "Nota": Com a funcionalitat extra, detecta quan la pàgina no s'ha expandit horitzontalment i mostra un botó "Expandir" per arreglar-la.
+
 ## Instal·lació
 
 1. Descarrega el fitxer [XTEC-Esfera.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera.zip).
