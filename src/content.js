@@ -327,6 +327,11 @@
       return;
     }
 
+    if (!subsectionName) {
+      select.classList.add("xtec-esfera-edit-black");
+      return;
+    }
+
     if (qualitative === "Pendent" && subsectionName === "01EM") {
       select.classList.add("xtec-esfera-edit-purple");
     } else if (qualitative === "Pendent") {
@@ -590,37 +595,6 @@
         line-height: 1.2;
       }
 
-      .xtec-esfera-tabs {
-        display: inline-flex;
-        gap: 3px;
-        padding: 2px;
-        border: 1px solid #d8e3ee;
-        border-radius: 8px;
-        background: #f3f7fb;
-      }
-
-      .xtec-esfera-tab {
-        min-width: 72px;
-        height: 26px;
-        border: 0;
-        border-radius: 6px;
-        background: transparent;
-        color: #52677d;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      .xtec-esfera-tab:hover {
-        background: #e7eff7;
-      }
-
-      .xtec-esfera-tab-active {
-        background: #ffffff;
-        color: #162334;
-        box-shadow: 0 1px 4px rgba(20, 31, 43, 0.12);
-      }
-
       .xtec-esfera-close {
         width: 32px;
         height: 32px;
@@ -800,6 +774,25 @@
         font-size: 11px;
       }
 
+      .xtec-esfera-edit-value,
+      .xtec-esfera-edit-subsection {
+        padding: 3px;
+      }
+
+      .xtec-esfera-edit-value .xtec-esfera-value-label,
+      .xtec-esfera-edit-subsection .xtec-esfera-subsection-name {
+        margin-bottom: 2px;
+      }
+
+      .xtec-esfera-edit-field {
+        height: 24px;
+        padding: 2px 3px;
+      }
+
+      .xtec-esfera-edit-subsection .xtec-esfera-edit-field {
+        height: 24px;
+      }
+
       .xtec-esfera-edit-field:disabled {
         background: #eef3f7;
         color: #718196;
@@ -860,8 +853,8 @@
 
       .xtec-esfera-edit-readonly {
         display: block;
-        min-height: 28px;
-        padding: 6px;
+        min-height: 24px;
+        padding: 3px;
         border-radius: 6px;
         background: #f4f8fc;
         color: #8a98a8;
@@ -972,7 +965,7 @@
     panel.className = "xtec-esfera-panel";
     panel.setAttribute("role", "dialog");
     panel.setAttribute("aria-modal", "true");
-    panel.setAttribute("aria-label", "XTEC-Esfera summary");
+    panel.setAttribute("aria-label", "XTEC-Esfera edit");
 
     const header = document.createElement("header");
     header.className = "xtec-esfera-header";
@@ -985,54 +978,23 @@
 
     const heading = document.createElement("h2");
     const studentName = getStudentName();
-    heading.textContent = studentName ? `Resum de mòduls: ${studentName}` : "Resum de mòduls";
-
-    const tabs = document.createElement("div");
-    tabs.className = "xtec-esfera-tabs";
-
-    const summaryTab = document.createElement("button");
-    summaryTab.className = "xtec-esfera-tab xtec-esfera-tab-active";
-    summaryTab.type = "button";
-    summaryTab.textContent = "Resum";
-    summaryTab.setAttribute("aria-pressed", "true");
-
-    const editTab = document.createElement("button");
-    editTab.className = "xtec-esfera-tab";
-    editTab.type = "button";
-    editTab.textContent = "Edició";
-    editTab.setAttribute("aria-pressed", "false");
-
-    tabs.append(summaryTab, editTab);
+    heading.textContent = studentName ? `Edició de mòduls: ${studentName}` : "Edició de mòduls";
     headingGroup.append(eyebrow, heading);
 
     const closeButton = document.createElement("button");
     closeButton.className = "xtec-esfera-close";
     closeButton.type = "button";
-    closeButton.setAttribute("aria-label", "Close summary");
+    closeButton.setAttribute("aria-label", "Close edit");
     closeButton.textContent = "×";
     closeButton.addEventListener("click", () => overlay.remove());
 
     const headerActions = document.createElement("div");
     headerActions.className = "xtec-esfera-header-actions";
-    headerActions.append(tabs, closeButton);
+    headerActions.append(closeButton);
 
     header.append(headingGroup, headerActions);
     panel.append(header);
-
-    const setActiveView = (viewName) => {
-      const isSummary = viewName === "summary";
-      summaryTab.classList.toggle("xtec-esfera-tab-active", isSummary);
-      editTab.classList.toggle("xtec-esfera-tab-active", !isSummary);
-      summaryTab.setAttribute("aria-pressed", String(isSummary));
-      editTab.setAttribute("aria-pressed", String(!isSummary));
-
-      panel.querySelector(".xtec-esfera-grid, .xtec-esfera-empty")?.remove();
-      panel.append(isSummary ? createSummaryView(modules) : createEditView(modules));
-    };
-
-    summaryTab.addEventListener("click", () => setActiveView("summary"));
-    editTab.addEventListener("click", () => setActiveView("edit"));
-    setActiveView("summary");
+    panel.append(createEditView(modules));
 
     overlay.append(panel);
     overlay.addEventListener("click", (event) => {
@@ -1202,8 +1164,8 @@
     if (!existingButton) {
       summaryButton.id = summaryButtonId;
       summaryButton.type = "button";
-      summaryButton.textContent = "Resum";
-      summaryButton.setAttribute("aria-label", "Open XTEC-Esfera summary");
+      summaryButton.textContent = "Panell d'edició";
+      summaryButton.setAttribute("aria-label", "Open XTEC-Esfera edit");
       summaryButton.addEventListener("click", openSummary);
     }
 

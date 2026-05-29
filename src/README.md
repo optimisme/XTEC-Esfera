@@ -1,10 +1,14 @@
 # XTEC-Esfera
 
-A Chrome extension that shows a centered overlay with a summary of XTEC-Esfera module grades from the current page.
+A Chrome extension that shows a centered edit panel for XTEC-Esfera module grades from the current page.
 
-## Avís sobre el mode d'edició
+## Avís sobre el panell d'edició
 
-El mode **Edició** és provisional. Pot omplir camps del formulari original d'XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
+El botó **Panell d'edició** obre directament el panell editable. Aquesta funcionalitat és provisional: pot omplir camps del formulari original d'XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
+
+Cada camp editable del panell està lligat al camp original corresponent del formulari. Quan es canvia un valor, l'extensió actualitza el camp original i dispara els esdeveniments `input`, `change` i `blur` perquè XTEC-Esfera detecti el canvi.
+
+La qualificació qualitativa principal es mostra en negre, i les qualitatives de les subseccions mantenen els colors del resum anterior: pendent en vermell, pendent de `01EM` en morat, en procés en blau i la resta en gris. Els valors i subseccions tenen un espaiat més compacte dins el panell.
 
 ## Instal·lació a Chrome
 

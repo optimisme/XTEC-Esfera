@@ -1,12 +1,14 @@
 # XTEC-Esfera
 
-Extensió de Chrome per consultar ràpidament un resum de qualificacions dins les pàgines d’avaluació d’XTEC-Esfera.
+Extensió de Chrome per obrir ràpidament un panell d'edició de qualificacions dins les pàgines d'avaluació d'XTEC-Esfera.
 
-L’extensió afegeix un botó **Resum** a la pantalla que mostra una finestra gran amb els mòduls, les qualificacions principals i els resultats d’aprenentatge.
+L'extensió afegeix un botó **Panell d'edició** a la pantalla que mostra una finestra gran amb els mòduls, les qualificacions principals i els resultats d'aprenentatge. El panell s'obre directament en mode edició.
 
 ![Nou botó](assets/buttons.png)
 
-El mode **Resum** és només informatiu. El mode **Edició** és una funcionalitat provisional: pot omplir camps del formulari original d’XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
+El panell d'edició és una funcionalitat provisional: pot omplir camps del formulari original d'XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
+
+Els camps de qualificació del panell utilitzen colors per facilitar la revisió visual. 
 
 ![Captura de l'extensió XTEC-Esfera](assets/capture.png)
 
@@ -20,7 +22,7 @@ El mode **Resum** és només informatiu. El mode **Edició** és una funcionalit
 4. Activa el **Mode de desenvolupador**. (A dalt a la dreta)
 5. Prem **Carrega una extensió desempaquetada**.
 6. Selecciona la carpeta descomprimida, la que conté el fitxer `manifest.json`.
-7. Obre una pàgina de "Qualificacions per grup i alumne" compatible d’XTEC-Esfera i prem el botó **Resum**.
+7. Obre una pàgina de "Qualificacions per grup i alumne" compatible d'XTEC-Esfera i prem el botó **Panell d'edició**.
 
 Chrome no instal·la extensions arrossegant directament un fitxer `.zip` en mode desenvolupador. Primer cal descomprimir-lo i carregar la carpeta desempaquetada.
 
