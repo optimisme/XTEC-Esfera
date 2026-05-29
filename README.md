@@ -1,6 +1,6 @@
 # XTEC-Esfera
 
-Extensió de Chrome per obrir ràpidament un panell d'edició de qualificacions dins les pàgines d'avaluació d'XTEC-Esfera.
+Extensió per Chrome i Firefox per obrir ràpidament un panell d'edició de qualificacions dins les pàgines d'avaluació d'XTEC-Esfera.
 
 L'extensió afegeix un botó **Panell d'edició** a la pantalla que mostra una finestra gran amb els mòduls, les qualificacions principals i els resultats d'aprenentatge. El panell s'obre directament en mode edició.
 
@@ -14,9 +14,14 @@ Els camps de qualificació del panell utilitzen colors per facilitar la revisió
 
 > "Nota": Com a funcionalitat extra, detecta quan la pàgina no s'ha expandit horitzontalment i mostra un botó "Expandir" per arreglar-la.
 
-## Instal·lació
+## Descàrrega
 
-1. Descarrega el fitxer [XTEC-Esfera.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera.zip).
+- [Versió Chrome](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-chrome.zip)
+- [Versió Firefox](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-firefox.zip)
+
+## Instal·lació Chrome
+
+1. Descarrega el fitxer [XTEC-Esfera-chrome.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-chrome.zip).
 2. Descomprimeix el fitxer `.zip` i guarda la carpeta descomprimida en un lloc no temporal, per exemple a `Documents` o a una carpeta d’aplicacions.
 3. Obre una pestanya nova a Chrome i escriu a la barra d’adreces: `chrome://extensions`.
 4. Activa el **Mode de desenvolupador**. (A dalt a la dreta)
@@ -26,8 +31,19 @@ Els camps de qualificació del panell utilitzen colors per facilitar la revisió
 
 Chrome no instal·la extensions arrossegant directament un fitxer `.zip` en mode desenvolupador. Primer cal descomprimir-lo i carregar la carpeta desempaquetada.
 
+## Instal·lació Firefox
+
+1. Descarrega el fitxer [XTEC-Esfera-firefox.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-firefox.zip).
+2. Descomprimeix el fitxer `.zip` i guarda la carpeta descomprimida en un lloc no temporal.
+3. Obre Firefox i escriu a la barra d'adreces: `about:debugging#/runtime/this-firefox`.
+4. Prem **Carrega un complement temporal...**.
+5. Selecciona el fitxer `manifest.json` de la carpeta descomprimida.
+6. Obre una pàgina de "Qualificacions per grup i alumne" compatible d'XTEC-Esfera i prem el botó **Panell d'edició**.
+
+Firefox carrega aquesta versió com a complement temporal mentre no estigui publicada o signada a Mozilla Add-ons. Si es reinicia Firefox, cal tornar-la a carregar des d'`about:debugging`.
+
 ## Desenvolupament
 
 El codi font de l’extensió és a la carpeta [src](src).
 
-La versió empaquetada és el fitxer [XTEC-Esfera.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera.zip). La versió actual de l’extensió és `0.1.1`.
+Les versions empaquetades són [XTEC-Esfera-chrome.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-chrome.zip) i [XTEC-Esfera-firefox.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-firefox.zip). La versió actual de l’extensió és `0.1.1`.
