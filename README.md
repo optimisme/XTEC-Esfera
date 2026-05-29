@@ -6,7 +6,7 @@ L'extensió afegeix un botó **Panell d'edició** a la pantalla que mostra una f
 
 ![Nou botó](assets/buttons.png)
 
-El panell d'edició és una funcionalitat provisional: pot omplir camps del formulari original d'XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
+El panell d'edició permet omplir camps del formulari original d'XTEC-Esfera, per seguretat cal revisar els canvis abans de prémer el botó **Desa**.
 
 Els camps de qualificació del panell utilitzen colors per facilitar la revisió visual. 
 
@@ -40,8 +40,6 @@ Chrome no instal·la extensions arrossegant directament un fitxer `.zip` en mode
 5. Selecciona el fitxer `manifest.json` de la carpeta descomprimida.
 6. Obre una pàgina de "Qualificacions per grup i alumne" compatible d'XTEC-Esfera i prem el botó **Panell d'edició**.
 
-Firefox carrega aquesta versió com a complement temporal mentre no estigui publicada o signada a Mozilla Add-ons. Si es reinicia Firefox, cal tornar-la a carregar des d'`about:debugging`.
-
 ## Desenvolupament
 
 El codi font de l’extensió és a la carpeta [src](src).
@@ -51,5 +49,3 @@ Per generar els paquets de Chrome i Firefox, executa:
 ```sh
 scripts/package.sh
 ```
-
-Les versions empaquetades són [XTEC-Esfera-chrome.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-chrome.zip) i [XTEC-Esfera-firefox.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-firefox.zip). La versió actual de l’extensió és `0.1.1`.
