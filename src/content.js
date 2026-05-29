@@ -289,6 +289,10 @@
   }
 
   function markEditFieldSynced(field) {
+    if (field.classList.contains("xtec-esfera-edit-red")) {
+      return;
+    }
+
     field.classList.add("xtec-esfera-edit-synced");
     window.setTimeout(() => {
       field.classList.remove("xtec-esfera-edit-synced");
@@ -317,6 +321,45 @@
     }
 
     field.classList.add(colorClass);
+  }
+
+  function markEditFieldError(field) {
+    clearEditFieldColor(field);
+    if (field.disabled) {
+      return;
+    }
+
+    field.classList.add("xtec-esfera-edit-red");
+  }
+
+  function hasEditFieldValue(field) {
+    return Boolean(cleanText(field?.value));
+  }
+
+  function applyModuleEditColors(provisionalField, quantitativeField, qualitativeField) {
+    const hasProvisional = hasEditFieldValue(provisionalField);
+    const hasQuantitative = hasEditFieldValue(quantitativeField);
+    const hasQualitative = hasEditFieldValue(qualitativeField);
+    const hasNoValue = !hasProvisional && !hasQuantitative && !hasQualitative;
+    const hasConflictingNumericValues = hasProvisional && hasQuantitative;
+    const hasOnlyQualitative = !hasProvisional && !hasQuantitative && hasQualitative;
+
+    applyEditFieldColor(provisionalField, "xtec-esfera-edit-blue");
+    applyEditFieldColor(quantitativeField, "xtec-esfera-edit-green");
+    applyQualitativeEditColor(qualitativeField);
+
+    if (hasNoValue || hasConflictingNumericValues || hasOnlyQualitative) {
+      markEditFieldError(provisionalField);
+      markEditFieldError(quantitativeField);
+    }
+
+    if (
+      hasNoValue ||
+      (hasProvisional && !hasQuantitative && !hasQualitative) ||
+      (hasQuantitative && hasQualitative)
+    ) {
+      markEditFieldError(qualitativeField);
+    }
   }
 
   function applyQualitativeEditColor(select, subsectionName = "") {
@@ -352,7 +395,7 @@
     return span;
   }
 
-  function createEditableInput(control, value, label, colorClass) {
+  function createEditableInput(control, value, label, colorClass, options = {}) {
     if (!control) {
       return createReadOnlyEditValue(value);
     }
@@ -371,6 +414,7 @@
     const syncInput = () => {
       setNativeControlValue(control, input.value);
       applyEditFieldColor(input, colorClass);
+      options.onSync?.();
       markEditFieldSynced(input);
     };
 
@@ -411,6 +455,7 @@
     select.addEventListener("change", () => {
       setNativeControlValue(control, select.value);
       applyQualitativeEditColor(select, options.subsectionName);
+      options.onSync?.();
       markEditFieldSynced(select);
     });
 
@@ -442,29 +487,39 @@
 
     const values = document.createElement("div");
     values.className = "xtec-esfera-values";
+    let provisionalField;
+    let quantitativeField;
+    let qualitativeField;
+    const refreshMainFieldColors = () => {
+      applyModuleEditColors(provisionalField, quantitativeField, qualitativeField);
+    };
+
+    provisionalField = createEditableInput(
+      module.controls?.provisional,
+      module.provisional,
+      `${module.code} provisional`,
+      "xtec-esfera-edit-blue",
+      { onSync: refreshMainFieldColors }
+    );
+    quantitativeField = createEditableInput(
+      module.controls?.quantitative,
+      module.quantitative,
+      `${module.code} qualificacio`,
+      "xtec-esfera-edit-green",
+      { onSync: refreshMainFieldColors }
+    );
+    qualitativeField = createEditableSelect(
+      module.controls?.qualitative,
+      module.qualitative,
+      `${module.code} qualitativa`,
+      { onSync: refreshMainFieldColors }
+    );
+    refreshMainFieldColors();
+
     values.append(
-      createEditValue(
-        "Provisional",
-        createEditableInput(
-          module.controls?.provisional,
-          module.provisional,
-          `${module.code} provisional`,
-          "xtec-esfera-edit-blue"
-        )
-      ),
-      createEditValue(
-        "Qualificació",
-        createEditableInput(
-          module.controls?.quantitative,
-          module.quantitative,
-          `${module.code} qualificacio`,
-          "xtec-esfera-edit-green"
-        )
-      ),
-      createEditValue(
-        "Qualitativa",
-        createEditableSelect(module.controls?.qualitative, module.qualitative, `${module.code} qualitativa`)
-      )
+      createEditValue("Provisional", provisionalField),
+      createEditValue("Qualificació", quantitativeField),
+      createEditValue("Qualitativa", qualitativeField)
     );
 
     card.append(title, code, values);
