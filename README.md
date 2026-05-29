@@ -46,4 +46,10 @@ Firefox carrega aquesta versió com a complement temporal mentre no estigui publ
 
 El codi font de l’extensió és a la carpeta [src](src).
 
+Per generar els paquets de Chrome i Firefox, executa:
+
+```sh
+scripts/package.sh
+```
+
 Les versions empaquetades són [XTEC-Esfera-chrome.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-chrome.zip) i [XTEC-Esfera-firefox.zip](https://github.com/optimisme/XTEC-Esfera/raw/refs/heads/main/XTEC-Esfera-firefox.zip). La versió actual de l’extensió és `0.1.1`.

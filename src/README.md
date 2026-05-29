@@ -4,11 +4,9 @@ A Chrome and Firefox extension that shows a centered edit panel for XTEC-Esfera 
 
 ## Avís sobre el panell d'edició
 
-El botó **Panell d'edició** obre directament el panell editable. Aquesta funcionalitat és provisional: pot omplir camps del formulari original d'XTEC-Esfera, però cal revisar manualment tots els canvis a la pàgina abans de prémer el botó oficial **Desa**.
+El botó **Panell d'edició** obre directament el panell editable. Aquesta funcionalitat permet omplir els camps del formulari original d'XTEC-Esfera de manera més compacte, per seguretat cal revisar tots els canvis abans de prémer el botó  **Desa**.
 
-Cada camp editable del panell està lligat al camp original corresponent del formulari. Quan es canvia un valor, l'extensió actualitza el camp original i dispara els esdeveniments `input`, `change` i `blur` perquè XTEC-Esfera detecti el canvi.
-
-La qualificació qualitativa principal es mostra en negre, i les qualitatives de les subseccions mantenen els colors del resum anterior: pendent en vermell, pendent de `01EM` en morat, en procés en blau i la resta en gris. Els valors i subseccions tenen un espaiat més compacte dins el panell.
+Cada camp editable del panell està lligat al camp original corresponent del formulari. Quan es canvia un valor, l'extensió actualitza el camp original.
 
 ## Instal·lació Chrome
 
@@ -35,3 +33,7 @@ Firefox carrega aquesta versió com a complement temporal mentre no estigui publ
 - `manifest.firefox.json`: Firefox extension metadata and permissions. It is packaged as `manifest.json` in the Firefox ZIP.
 - `background.js`: Runs when the extension button is clicked.
 - `content.js`: Extracts module data from the page and renders the overlay.
+
+## Packaging
+
+Run `scripts/package.sh` from the repository root to build both browser packages. The script creates `XTEC-Esfera-chrome.zip`, `XTEC-Esfera-firefox.zip`, and keeps `XTEC-Esfera.zip` as a Chrome-compatible package.
