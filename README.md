@@ -10,7 +10,7 @@ El panell d'edició és una funcionalitat provisional: pot omplir camps del form
 
 Els camps de qualificació del panell utilitzen colors per facilitar la revisió visual. 
 
-![Captura de l'extensió XTEC-Esfera](assets/capture.png)
+![Captura de l'extensió XTEC-Esfera](assets/panell.png)
 
 > "Nota": Com a funcionalitat extra, detecta quan la pàgina no s'ha expandit horitzontalment i mostra un botó "Expandir" per arreglar-la.
 
