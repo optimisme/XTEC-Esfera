@@ -341,6 +341,11 @@
     return Boolean(cleanText(field?.value));
   }
 
+  function parseGradeValue(value) {
+    const grade = Number(cleanText(value));
+    return Number.isFinite(grade) ? grade : null;
+  }
+
   function applyModuleEditColors(provisionalField, quantitativeField, qualitativeField) {
     const hasProvisional = hasEditFieldValue(provisionalField);
     const hasQuantitative = hasEditFieldValue(quantitativeField);
@@ -351,14 +356,55 @@
     const hasOnlyQualitative = !hasProvisional && !hasQuantitative && hasQualitative;
     const hasQuantitativeOnly = !hasProvisional && hasQuantitative && !hasQualitative;
     const hasPendingProvisional = hasProvisional && !hasQuantitative && qualitative === "Pendent";
-    const hasNotPresentedOnly = !hasProvisional && !hasQuantitative && qualitative === "NP";
+    const hasPendingQuantitative = !hasProvisional && hasQuantitative && qualitative === "Pendent";
+    const hasOnlyProvisional = hasProvisional && !hasQuantitative && !hasQualitative;
+    const hasNotPresented = qualitative === "NP";
 
     applyEditFieldColor(provisionalField, "xtec-esfera-edit-blue");
     applyEditFieldColor(quantitativeField, "xtec-esfera-edit-green");
     applyQualitativeEditColor(qualitativeField);
 
-    if (hasQuantitativeOnly) {
+    if (hasNotPresented) {
+      if (hasProvisional) {
+        markEditFieldError(provisionalField);
+      } else {
+        applyEditFieldColor(provisionalField, "xtec-esfera-edit-grey");
+      }
+
+      if (hasQuantitative) {
+        markEditFieldError(quantitativeField);
+      } else {
+        applyEditFieldColor(quantitativeField, "xtec-esfera-edit-grey");
+      }
+
+      if (hasProvisional || hasQuantitative) {
+        markEditFieldError(qualitativeField);
+      } else {
+        applyEditFieldColor(qualitativeField, "xtec-esfera-edit-grey");
+      }
+      return;
+    }
+
+    if (hasPendingQuantitative) {
       applyEditFieldColor(provisionalField, "xtec-esfera-edit-grey");
+      markEditFieldError(quantitativeField);
+      markEditFieldError(qualitativeField);
+      return;
+    }
+
+    if (hasOnlyProvisional) {
+      markEditFieldError(provisionalField);
+      applyEditFieldColor(quantitativeField, "xtec-esfera-edit-grey");
+      markEditFieldError(qualitativeField);
+      return;
+    }
+
+    if (hasQuantitativeOnly) {
+      const grade = parseGradeValue(quantitativeField?.value);
+      applyEditFieldColor(provisionalField, "xtec-esfera-edit-grey");
+      if (grade !== null && grade < 5) {
+        applyEditFieldColor(quantitativeField, "xtec-esfera-edit-yellow");
+      }
     }
 
     if (hasPendingProvisional) {
@@ -367,13 +413,7 @@
       applyEditFieldColor(qualitativeField, "xtec-esfera-edit-purple");
     }
 
-    if (hasNotPresentedOnly) {
-      applyEditFieldColor(provisionalField, "xtec-esfera-edit-grey");
-      applyEditFieldColor(quantitativeField, "xtec-esfera-edit-grey");
-      applyEditFieldColor(qualitativeField, "xtec-esfera-edit-grey");
-    }
-
-    if (hasNoValue || hasConflictingNumericValues || (hasOnlyQualitative && !hasNotPresentedOnly)) {
+    if (hasNoValue || hasConflictingNumericValues || hasOnlyQualitative) {
       markEditFieldError(provisionalField);
       markEditFieldError(quantitativeField);
     }
