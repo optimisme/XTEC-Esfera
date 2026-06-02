@@ -76,6 +76,10 @@
     return cleanedValue;
   }
 
+  function isNoAssolitValue(value) {
+    return cleanText(value).toLowerCase().includes("no assolit");
+  }
+
   function getModuleName(rawName, code) {
     return cleanText(rawName).replace(new RegExp(`\\s*¬\\(${code}\\)\\s*$`), "").trim();
   }
@@ -306,7 +310,8 @@
       "xtec-esfera-edit-black",
       "xtec-esfera-edit-red",
       "xtec-esfera-edit-purple",
-      "xtec-esfera-edit-grey"
+      "xtec-esfera-edit-grey",
+      "xtec-esfera-edit-yellow"
     );
   }
 
@@ -340,15 +345,35 @@
     const hasProvisional = hasEditFieldValue(provisionalField);
     const hasQuantitative = hasEditFieldValue(quantitativeField);
     const hasQualitative = hasEditFieldValue(qualitativeField);
+    const qualitative = formatQualitativeValue(getSelectedText(qualitativeField) || qualitativeField?.value);
     const hasNoValue = !hasProvisional && !hasQuantitative && !hasQualitative;
     const hasConflictingNumericValues = hasProvisional && hasQuantitative;
     const hasOnlyQualitative = !hasProvisional && !hasQuantitative && hasQualitative;
+    const hasQuantitativeOnly = !hasProvisional && hasQuantitative && !hasQualitative;
+    const hasPendingProvisional = hasProvisional && !hasQuantitative && qualitative === "Pendent";
+    const hasNotPresentedOnly = !hasProvisional && !hasQuantitative && qualitative === "NP";
 
     applyEditFieldColor(provisionalField, "xtec-esfera-edit-blue");
     applyEditFieldColor(quantitativeField, "xtec-esfera-edit-green");
     applyQualitativeEditColor(qualitativeField);
 
-    if (hasNoValue || hasConflictingNumericValues || hasOnlyQualitative) {
+    if (hasQuantitativeOnly) {
+      applyEditFieldColor(provisionalField, "xtec-esfera-edit-grey");
+    }
+
+    if (hasPendingProvisional) {
+      applyEditFieldColor(provisionalField, "xtec-esfera-edit-purple");
+      applyEditFieldColor(quantitativeField, "xtec-esfera-edit-grey");
+      applyEditFieldColor(qualitativeField, "xtec-esfera-edit-purple");
+    }
+
+    if (hasNotPresentedOnly) {
+      applyEditFieldColor(provisionalField, "xtec-esfera-edit-grey");
+      applyEditFieldColor(quantitativeField, "xtec-esfera-edit-grey");
+      applyEditFieldColor(qualitativeField, "xtec-esfera-edit-grey");
+    }
+
+    if (hasNoValue || hasConflictingNumericValues || (hasOnlyQualitative && !hasNotPresentedOnly)) {
       markEditFieldError(provisionalField);
       markEditFieldError(quantitativeField);
     }
@@ -370,15 +395,12 @@
       return;
     }
 
-    if (!subsectionName) {
+    if (isNoAssolitValue(qualitative)) {
+      select.classList.add("xtec-esfera-edit-yellow");
+    } else if (!subsectionName) {
       select.classList.add("xtec-esfera-edit-black");
-      return;
-    }
-
-    if (qualitative === "Pendent" && subsectionName === "01EM") {
-      select.classList.add("xtec-esfera-edit-purple");
     } else if (qualitative === "Pendent") {
-      select.classList.add("xtec-esfera-edit-red");
+      select.classList.add("xtec-esfera-edit-purple");
     } else if (qualitative === "En Procés") {
       select.classList.add("xtec-esfera-edit-blue");
     } else if (qualitative) {
@@ -898,6 +920,13 @@
         border-color: #d1d5db;
         background: #f8fafc;
         color: #374151;
+        font-weight: 700;
+      }
+
+      .xtec-esfera-edit-yellow {
+        border-color: #fde68a;
+        background: #fef9c3;
+        color: #854d0e;
         font-weight: 700;
       }
 
