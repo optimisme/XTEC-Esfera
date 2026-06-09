@@ -5,6 +5,7 @@
   const styleId = "xtec-esfera-style";
   const openEventName = "xtec-esfera-open-summary";
   const contentCodePattern = /^\d{4}_[A-Za-z0-9]+(?:_[A-Za-z0-9]+)*$/;
+  const subjectCodePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9]{2,12}$/;
   const compactTableMinWidthSum = 40;
   const compactTableMaxWidthSum = 60;
   const provisionalSelector =
@@ -105,6 +106,14 @@
     );
   }
 
+  function rowHasNumericGradeControls(row) {
+    return Boolean(row.querySelector(provisionalSelector) || row.querySelector(quantitativeSelector));
+  }
+
+  function isStandaloneSubjectCode(code) {
+    return subjectCodePattern.test(code) && !code.includes("_");
+  }
+
   function getStudentName() {
     const breadcrumbItems = Array.from(
       document.querySelectorAll(".breadcrumb li, .breadcrumb a, .breadcrumb-wrapper li, .breadcrumb-wrapper a")
@@ -164,6 +173,25 @@
           qualitative: getQualitativeValue(row),
           controls: getRowControls(row)
         });
+        return;
+      }
+
+      if (
+        isStandaloneSubjectCode(code) &&
+        !referencedCode &&
+        !rowHasNumericGradeControls(row) &&
+        row.querySelector(qualitativeSelector)
+      ) {
+        currentModule = null;
+        modules.push({
+          code,
+          name: cleanText(cells[1].textContent) || code,
+          provisional: "",
+          quantitative: "",
+          qualitative: getQualitativeValue(row),
+          controls: getRowControls(row),
+          subsections: []
+        });
       }
     });
 
@@ -212,15 +240,22 @@
     values.className = "xtec-esfera-values";
     const hasNumericGrade = Boolean(cleanText(module.provisional) || cleanText(module.quantitative));
     const hasQuantitativeGrade = cleanText(module.quantitative).toUpperCase() !== "FALTA" && Boolean(cleanText(module.quantitative));
+    const hasNumericControls = Boolean(module.controls?.provisional || module.controls?.quantitative);
+
+    if (hasNumericControls || hasNumericGrade) {
+      values.append(
+        createValue("Provisional", module.provisional, "xtec-esfera-blue", {
+          showMissing: !hasNumericGrade
+        }),
+        createValue("Qualificació", module.quantitative, "xtec-esfera-green", {
+          showMissing: !hasNumericGrade
+        })
+      );
+    }
+
     values.append(
-      createValue("Provisional", module.provisional, "xtec-esfera-blue", {
-        showMissing: !hasNumericGrade
-      }),
-      createValue("Qualificació", module.quantitative, "xtec-esfera-green", {
-        showMissing: !hasNumericGrade
-      }),
       createValue("Qualitativa", formatQualitativeValue(module.qualitative), "xtec-esfera-black", {
-        showMissing: !hasQuantitativeGrade
+        showMissing: hasNumericControls ? !hasQuantitativeGrade : true
       })
     );
 
@@ -549,27 +584,35 @@
 
     const values = document.createElement("div");
     values.className = "xtec-esfera-values";
+    const hasNumericControls = Boolean(module.controls?.provisional || module.controls?.quantitative);
     let provisionalField;
     let quantitativeField;
     let qualitativeField;
     const refreshMainFieldColors = () => {
-      applyModuleEditColors(provisionalField, quantitativeField, qualitativeField);
+      if (hasNumericControls) {
+        applyModuleEditColors(provisionalField, quantitativeField, qualitativeField);
+      } else {
+        applyQualitativeEditColor(qualitativeField);
+      }
     };
 
-    provisionalField = createEditableInput(
-      module.controls?.provisional,
-      module.provisional,
-      `${module.code} provisional`,
-      "xtec-esfera-edit-blue",
-      { onSync: refreshMainFieldColors }
-    );
-    quantitativeField = createEditableInput(
-      module.controls?.quantitative,
-      module.quantitative,
-      `${module.code} qualificacio`,
-      "xtec-esfera-edit-green",
-      { onSync: refreshMainFieldColors }
-    );
+    if (hasNumericControls) {
+      provisionalField = createEditableInput(
+        module.controls?.provisional,
+        module.provisional,
+        `${module.code} provisional`,
+        "xtec-esfera-edit-blue",
+        { onSync: refreshMainFieldColors }
+      );
+      quantitativeField = createEditableInput(
+        module.controls?.quantitative,
+        module.quantitative,
+        `${module.code} qualificacio`,
+        "xtec-esfera-edit-green",
+        { onSync: refreshMainFieldColors }
+      );
+    }
+
     qualitativeField = createEditableSelect(
       module.controls?.qualitative,
       module.qualitative,
@@ -578,11 +621,14 @@
     );
     refreshMainFieldColors();
 
-    values.append(
-      createEditValue("Provisional", provisionalField),
-      createEditValue("Qualificació", quantitativeField),
-      createEditValue("Qualitativa", qualitativeField)
-    );
+    if (hasNumericControls) {
+      values.append(
+        createEditValue("Provisional", provisionalField),
+        createEditValue("Qualificació", quantitativeField)
+      );
+    }
+
+    values.append(createEditValue("Qualitativa", qualitativeField));
 
     card.append(title, code, values);
 
