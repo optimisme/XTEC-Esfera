@@ -13,6 +13,9 @@
     'input[ng-model="contingut.quantitativa"], input[data-ng-model="contingut.quantitativa"]';
   const qualitativeSelector =
     'select[ng-model="contingut.qualitativa"], select[data-ng-model="contingut.qualitativa"]';
+  const editBindings = new Set();
+  let editRefreshTimer = 0;
+  let activeOverlayCleanup = null;
 
   if (window.__xtecEsferaInitialized) {
     return;
@@ -267,6 +270,10 @@
   }
 
   function setNativeControlValue(control, value) {
+    if (isControlDisabled(control)) {
+      return;
+    }
+
     const wasDisabled = control.disabled;
     if (wasDisabled) {
       control.disabled = false;
@@ -290,6 +297,49 @@
     if (wasDisabled) {
       control.disabled = true;
     }
+  }
+
+  function isControlDisabled(control) {
+    return Boolean(
+      control?.disabled ||
+        control?.matches?.(":disabled") ||
+        control?.getAttribute?.("aria-disabled") === "true"
+    );
+  }
+
+  function syncEditFieldWithControl(binding) {
+    const { control, field, applyColor } = binding;
+    if (!control?.isConnected || !field?.isConnected) {
+      editBindings.delete(binding);
+      return;
+    }
+
+    field.disabled = isControlDisabled(control);
+    if (field.value !== control.value) {
+      field.value = control.value || "";
+    }
+    applyColor?.();
+  }
+
+  function refreshEditBindings() {
+    editBindings.forEach(syncEditFieldWithControl);
+  }
+
+  function scheduleEditBindingsRefresh() {
+    window.clearTimeout(editRefreshTimer);
+    editRefreshTimer = window.setTimeout(refreshEditBindings, 0);
+  }
+
+  function bindEditFieldToControl(control, field, applyColor) {
+    const binding = { control, field, applyColor };
+    editBindings.add(binding);
+    syncEditFieldWithControl(binding);
+    return binding;
+  }
+
+  function clearEditBindings() {
+    window.clearTimeout(editRefreshTimer);
+    editBindings.clear();
   }
 
   function markEditFieldSynced(field) {
@@ -471,12 +521,14 @@
     input.step = control.step || "";
     input.value = control.value || value || "";
     input.setAttribute("aria-label", label);
-    applyEditFieldColor(input, colorClass);
+    const applyColor = () => applyEditFieldColor(input, colorClass);
+    bindEditFieldToControl(control, input, applyColor);
 
     const syncInput = () => {
       setNativeControlValue(control, input.value);
-      applyEditFieldColor(input, colorClass);
+      applyColor();
       options.onSync?.();
+      scheduleEditBindingsRefresh();
       markEditFieldSynced(input);
     };
 
@@ -512,12 +564,14 @@
         select.value = matchingOption.value;
       }
     }
-    applyQualitativeEditColor(select, options.subsectionName);
+    const applyColor = () => applyQualitativeEditColor(select, options.subsectionName);
+    bindEditFieldToControl(control, select, applyColor);
 
     select.addEventListener("change", () => {
       setNativeControlValue(control, select.value);
-      applyQualitativeEditColor(select, options.subsectionName);
+      applyColor();
       options.onSync?.();
+      scheduleEditBindingsRefresh();
       markEditFieldSynced(select);
     });
 
@@ -1079,6 +1133,9 @@
     if (existingOverlay) {
       existingOverlay.remove();
     }
+    activeOverlayCleanup?.();
+    activeOverlayCleanup = null;
+    clearEditBindings();
 
     ensureStyles();
 
@@ -1110,7 +1167,12 @@
     closeButton.type = "button";
     closeButton.setAttribute("aria-label", "Close edit");
     closeButton.textContent = "×";
-    closeButton.addEventListener("click", () => overlay.remove());
+    const closeOverlay = () => {
+      activeOverlayCleanup?.();
+      activeOverlayCleanup = null;
+      overlay.remove();
+    };
+    closeButton.addEventListener("click", closeOverlay);
 
     const headerActions = document.createElement("div");
     headerActions.className = "xtec-esfera-header-actions";
@@ -1123,7 +1185,7 @@
     overlay.append(panel);
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay) {
-        overlay.remove();
+        closeOverlay();
       }
     });
 
@@ -1131,13 +1193,43 @@
       "keydown",
       (event) => {
         if (event.key === "Escape") {
-          overlay.remove();
+          closeOverlay();
         }
       },
       { once: true }
     );
 
     document.body.append(overlay);
+
+    const isOverlayMutation = (mutation) => {
+      const target = mutation.target;
+      return target instanceof Element && Boolean(target.closest(`#${overlayId}`));
+    };
+    const editStateObserver = new MutationObserver((mutations) => {
+      if (mutations.length && mutations.every(isOverlayMutation)) {
+        return;
+      }
+      scheduleEditBindingsRefresh();
+    });
+    editStateObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["aria-disabled", "class", "disabled", "style", "value"],
+      childList: true,
+      subtree: true
+    });
+
+    const userEvents = ["click", "input", "change", "keyup", "mouseup"];
+    userEvents.forEach((eventName) => {
+      document.addEventListener(eventName, scheduleEditBindingsRefresh, true);
+    });
+
+    activeOverlayCleanup = () => {
+      editStateObserver.disconnect();
+      userEvents.forEach((eventName) => {
+        document.removeEventListener(eventName, scheduleEditBindingsRefresh, true);
+      });
+      clearEditBindings();
+    };
   }
 
   function openSummary() {
