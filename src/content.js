@@ -307,14 +307,24 @@
     );
   }
 
+  function setEditFieldDisabled(field, disabled) {
+    field.disabled = disabled;
+    if (disabled) {
+      field.setAttribute("disabled", "disabled");
+      return;
+    }
+
+    field.removeAttribute("disabled");
+  }
+
   function syncEditFieldWithControl(binding) {
     const { control, field, applyColor } = binding;
-    if (!control?.isConnected || !field?.isConnected) {
+    if (!control?.isConnected) {
       editBindings.delete(binding);
       return;
     }
 
-    field.disabled = isControlDisabled(control);
+    setEditFieldDisabled(field, isControlDisabled(control));
     if (field.value !== control.value) {
       field.value = control.value || "";
     }
@@ -579,7 +589,7 @@
   }
 
   function createEditValue(label, control) {
-    const item = document.createElement("label");
+    const item = document.createElement("div");
     item.className = "xtec-esfera-value xtec-esfera-edit-value";
 
     const labelElement = document.createElement("span");
@@ -645,7 +655,7 @@
       subsections.className = "xtec-esfera-subsections";
 
       module.subsections.forEach((subsection) => {
-        const item = document.createElement("label");
+        const item = document.createElement("div");
         item.className = "xtec-esfera-subsection xtec-esfera-edit-subsection";
 
         const name = document.createElement("span");
